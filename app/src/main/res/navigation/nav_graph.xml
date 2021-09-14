@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.rss_mvi.presentation.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_homeFragment_to_addFeedFragment"
+            app:destination="@id/addFeedFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_postsFragment"
+            app:destination="@id/postsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/addFeedFragment"
+        android:name="com.example.rss_mvi.presentation.AddFeedFragment"
+        android:label="fragment_add_feed"
+        tools:layout="@layout/fragment_add_feed">
+
+        <action
+            android:id="@+id/action_addFeedFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/fade_out" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/postsFragment"
+        android:name="com.example.rss_mvi.presentation.PostsFragment"
+        android:label="fragment_posts"
+        tools:layout="@layout/fragment_posts">
+
+        <argument
+            android:name="feedId"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+        <argument
+            android:name="feedName"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="feedUrl"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <action
+            android:id="@+id/action_postsFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/fade_out" />
+
+    </fragment>
+
+</navigation>

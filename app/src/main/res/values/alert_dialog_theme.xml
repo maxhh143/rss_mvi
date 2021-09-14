@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="alert_dialog_white" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/alert_dialog_white.positive_button_style</item>
+        <item name="buttonBarNegativeButtonStyle">@style/alert_dialog_white.negative_button_style</item>
+    </style>
+
+    <style name="alert_dialog_white.positive_button_style" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/ksu_purple</item>
+    </style>
+
+    <style name="alert_dialog_white.negative_button_style" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/ksu_purple</item>
+    </style>
+</resources>

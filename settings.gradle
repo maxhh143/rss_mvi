@@ -1,0 +1,2 @@
+rootProject.name = "RSS_MVI"
+include ':app'
