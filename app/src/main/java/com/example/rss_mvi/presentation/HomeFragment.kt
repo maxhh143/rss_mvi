@@ -36,13 +36,16 @@ class HomeFragment : ViewModelFragment<HomeViewState, HomeViewEffect, HomeViewEv
             R.id.action_homeFragment_to_postsFragment,
             bundleOf("feedId" to it.id, "feedName" to it.name, "feedUrl" to it.link)
         ) },
-        {
-            viewModel.process(HomeViewEvent.DeleteSavedFeed(requireActivity(), it))
-        }
+        { viewModel.process(HomeViewEvent.DeleteSavedFeed(requireActivity(), it)) }
     ) }
 
     private lateinit var noFeedsSaved: TextView
     private lateinit var feedsList: RecyclerView
+
+    companion object {
+        private const val PREFERENCES_NAME: String = "com.example.rss_mvi.SHARED_PREFERENCES"
+        private const val FIRST_LAUNCH: String = "FIRST_LAUNCH"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,12 +59,31 @@ class HomeFragment : ViewModelFragment<HomeViewState, HomeViewEffect, HomeViewEv
             findNavController().navigate(R.id.action_homeFragment_to_addFeedFragment)
         }
 
-        viewModel.process(HomeViewEvent.LoadSavedFeeds(requireActivity()))
+        requireActivity().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).apply {
+            when (getBoolean(FIRST_LAUNCH, true)) {
+                true -> {
+                    edit().also {
+                        it.remove(FIRST_LAUNCH)
+                        it.putBoolean(FIRST_LAUNCH, false)
+                    }.apply()
+
+                    viewModel.process(HomeViewEvent.SaveInitialFeeds(requireActivity()))
+                }
+
+                false -> {
+                    viewModel.process(HomeViewEvent.LoadSavedFeeds(requireActivity()))
+                }
+            }
+        }
     }
 
     override fun renderViewState(viewState: HomeViewState) {
         when (viewState.loadSavedFeedsStatus) {
             is LoadSavedFeedsStatus.Loading -> {
+                ProgressDialog.show(requireActivity(), "Пожалуйста, подождите")
+            }
+
+            is LoadSavedFeedsStatus.Reloading -> {
                 ProgressDialog.show(requireActivity(), "Пожалуйста, подождите")
                 feedsListAdapter.notifyDataSetChanged()
             }

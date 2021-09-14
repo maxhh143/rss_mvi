@@ -24,6 +24,21 @@ class HomeViewModel(app: Application) : ViewModel<HomeViewState, HomeViewEffect,
     override fun process(viewEvent: HomeViewEvent) {
         super.process(viewEvent)
         when (viewEvent) {
+            is HomeViewEvent.SaveInitialFeeds -> {
+                viewState = viewState.copy(loadSavedFeedsStatus = LoadSavedFeedsStatus.Loading)
+                viewModelScope.launch {
+                    listOf(
+                        RssFeed(null, "NY Times", "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/rss.xml"),
+                        RssFeed(null, "BuzzFeed", "https://www.buzzfeed.com/world.xml"),
+                        RssFeed(null, "AL Jazeera", "http://www.aljazeera.com/xml/rss/all.xml"),
+                    ).forEach { feedRepository.saveFeed(viewEvent.context, it) }
+
+                    feedRepository.loadSavedFeeds(viewEvent.context).also {
+                        viewState = viewState.copy(savedFeeds = it as MutableList<RssFeed>, loadSavedFeedsStatus = LoadSavedFeedsStatus.Loaded)
+                    }
+                }
+            }
+
             is HomeViewEvent.LoadSavedFeeds -> {
                 viewModelScope.launch {
                     feedRepository.loadSavedFeeds(viewEvent.context).also {
@@ -35,7 +50,7 @@ class HomeViewModel(app: Application) : ViewModel<HomeViewState, HomeViewEffect,
             is HomeViewEvent.DeleteSavedFeed -> viewModelScope.launch {
                 feedRepository.deleteFeed(viewEvent.context, viewEvent.feed).also {
                     viewState.savedFeeds!!.remove(viewEvent.feed)
-                    viewState = viewState.copy(loadSavedFeedsStatus = LoadSavedFeedsStatus.Loading)
+                    viewState = viewState.copy(loadSavedFeedsStatus = LoadSavedFeedsStatus.Reloading)
                     feedRepository.loadSavedFeeds(viewEvent.context).also {
                         viewState = viewState.copy(savedFeeds = it as MutableList<RssFeed>, loadSavedFeedsStatus = LoadSavedFeedsStatus.Loaded)
                     }

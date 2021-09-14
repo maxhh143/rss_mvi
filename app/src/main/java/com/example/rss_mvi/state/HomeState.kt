@@ -13,11 +13,13 @@ sealed class HomeViewEffect {
 }
 
 sealed class HomeViewEvent {
+    data class SaveInitialFeeds(val context: Context) : HomeViewEvent()
     data class LoadSavedFeeds(val context: Context) : HomeViewEvent()
     data class DeleteSavedFeed(val context: Context, val feed: RssFeed) : HomeViewEvent()
 }
 
 sealed class LoadSavedFeedsStatus {
     object Loading : LoadSavedFeedsStatus()
+    object Reloading : LoadSavedFeedsStatus()
     object Loaded : LoadSavedFeedsStatus()
 }
